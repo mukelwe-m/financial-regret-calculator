@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inflation Regret Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --green-dark: #14532d;
+      --green-primary: #16a34a;
+      --green-soft: #dcfce7;
+      --green-border: #86efac;
+      --bg: #f7fff9;
+      --text: #1f2937;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .history-link {
+      text-decoration: none;
+      color: white;
+      background: var(--green-primary);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .history-link:hover { background: var(--green-dark); }
+
+    .panel {
+      border: 1px solid var(--green-border);
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 14px rgba(20, 83, 45, 0.08);
+    }
+
+    h1 {
+      margin: 4px 0;
+      color: var(--green-dark);
+    }
+
+    p.subtitle {
+      margin-top: 0;
+      color: #355144;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .full { grid-column: 1 / -1; }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: var(--green-dark);
+    }
+
+    input[type="number"], textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cde8d2;
+      border-radius: 8px;
+      background: #fcfffd;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 11px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: var(--green-primary);
+      color: white;
+    }
+
+    button:hover { background: var(--green-dark); }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      background: var(--green-soft);
+      border: 1px solid var(--green-border);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .metric .label { font-size: 12px; color: var(--green-dark); font-weight: bold; }
+    .metric .value { font-size: 22px; font-weight: bold; margin-top: 4px; }
+
+    .insight {
+      margin-top: 10px;
+      background: #f0fff4;
+      border-left: 4px solid var(--green-primary);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .error {
+      color: #991b1b;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+      margin-top: 10px;
+    }
+
+    #resultPanel { display: none; }
+
+    @media (max-width: 700px) {
+      form, .result-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div>
+        <h1>Inflation Regret Calculator</h1>
+        <p class="subtitle">Estimate how inflation erodes value and track your decisions over time.</p>
+      </div>
+      <a class="history-link" href="{{ url_for('history') }}">History</a>
+    </div>
+
+    <div class="panel">
+      <form id="calculatorForm">
+        <div class="full">
+          <label for="description">Description of decision</label>
+          <textarea id="description" name="description" rows="2" required placeholder="Bought a car for R200000 in 2015"></textarea>
+        </div>
+
+        <div>
+          <label for="initial_amount">Initial Amount (R)</label>
+          <input type="number" id="initial_amount" name="initial_amount" min="0" step="0.01" placeholder="1200" required>
+        </div>
+
+        <div>
+          <label for="start_year">Start Year</label>
+          <input type="number" id="start_year" name="start_year" min="1900" max="2100" value="{{ current_year - 5 }}" required>
+        </div>
+
+        <div>
+          <label for="end_year">End Year</label>
+          <input type="number" id="end_year" name="end_year" min="1900" max="2100" value="{{ current_year }}" required>
+        </div>
+
+        <div>
+          <label for="inflation_rate">Manual inflation fallback (%)</label>
+          <input type="number" id="inflation_rate" name="inflation_rate" min="0" step="0.01" placeholder="Used only if API has no data">
+        </div>
+
+        <div class="full">
+          <button type="submit">Calculate Regret</button>
+          <div id="errorBox" class="error"></div>
+        </div>
+      </form>
+    </div>
+
+    <div id="resultPanel" class="panel">
+      <h2 style="margin-top: 0; color: var(--green-dark);">Output</h2>
+      <div class="result-grid">
+        <div class="metric">
+          <div class="label">Future Cost</div>
+          <div class="value" id="futureCost">R0.00</div>
+        </div>
+        <div class="metric">
+          <div class="label">Purchasing Power Loss</div>
+          <div class="value" id="powerLoss">R0.00</div>
+        </div>
+        <div class="metric">
+          <div class="label">Regret Score</div>
+          <div class="value" id="regretScore">0 / 100</div>
+        </div>
+        <div class="metric">
+          <div class="label">Verdict</div>
+          <div class="value" id="verdict">-</div>
+        </div>
+      </div>
+      <p style="margin: 12px 0 0 0;"><strong>Inflation rate used:</strong> <span id="usedInflationRate">-</span></p>
+      <p style="margin: 4px 0 0 0;"><strong>Data source:</strong> <span id="usedSource">-</span></p>
+      <div class="insight" id="insightText"></div>
+      <div style="margin-top: 14px;">
+        <canvas id="projectionChart" height="120"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("calculatorForm");
+    const resultPanel = document.getElementById("resultPanel");
+    const errorBox = document.getElementById("errorBox");
+    let chartInstance = null;
+
+    const currency = (value) => `R${Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      errorBox.style.display = "none";
+
+      const payload = {
+        description: form.description.value,
+        initial_amount: form.initial_amount.value,
+        start_year: form.start_year.value,
+        end_year: form.end_year.value,
+        inflation_rate: form.inflation_rate.value,
+      };
+
+      try {
+        const response = await fetch("{{ url_for('calculate') }}", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          throw new Error("Calculation failed. Please try again.");
+        }
+
+        const data = await response.json();
+
+        document.getElementById("futureCost").textContent = currency(data.future_cost);
+        document.getElementById("powerLoss").textContent = currency(data.purchasing_power_loss);
+        document.getElementById("regretScore").textContent = `${data.regret_score} / 100`;
+        document.getElementById("verdict").textContent = data.verdict;
+        document.getElementById("usedInflationRate").textContent = `${data.inflation_rate}%`;
+        document.getElementById("usedSource").textContent = data.inflation_source;
+        document.getElementById("insightText").textContent = data.insight;
+
+        const labels = data.projection.map(item => item.year);
+        const values = data.projection.map(item => item.value);
+
+        if (chartInstance) {
+          chartInstance.destroy();
+        }
+
+        chartInstance = new Chart(document.getElementById("projectionChart"), {
+          type: "line",
+          data: {
+            labels,
+            datasets: [{
+              label: "Inflation-adjusted cost (R)",
+              data: values,
+              borderColor: "#16a34a",
+              backgroundColor: "rgba(22, 163, 74, 0.15)",
+              fill: true,
+              tension: 0.2
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: {
+              y: {
+                ticks: {
+                  callback: (val) => `R${val}`
+                }
+              }
+            }
+          }
+        });
+
+        resultPanel.style.display = "block";
+      } catch (error) {
+        errorBox.textContent = error.message;
+        errorBox.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>

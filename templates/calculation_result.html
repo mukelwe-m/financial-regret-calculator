@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inflation Regret Results</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f7fff9; color: #1f2937; }
     .container { max-width: 760px; margin: auto; }
-    .card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #f9f9f9; }
+    .card { border: 1px solid #86efac; border-radius: 8px; padding: 20px; background: #ffffff; }
     .result-line { margin: 8px 0; }
-    .label { font-weight: bold; }
-    a.button { display: inline-block; margin-top: 14px; background: #007bff; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 4px; }
+    .label { font-weight: bold; color: #14532d; }
+    a.button { display: inline-block; margin-top: 14px; background: #16a34a; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -21,13 +21,14 @@
       <div class="result-line"><span class="label">Initial Amount:</span> R{{ initial_amount | round(2) }}</div>
       <div class="result-line"><span class="label">Period:</span> {{ start_year }} → {{ end_year }} ({{ years }} years)</div>
       <div class="result-line"><span class="label">Inflation Rate:</span> {{ inflation_rate * 100 | round(2) }}%</div>
+      <div class="result-line"><span class="label">Inflation Source:</span> {{ inflation_source }}</div>
       <hr>
       <div class="result-line"><span class="label">Future Cost:</span> R{{ future_cost | round(2) }}</div>
       <div class="result-line"><span class="label">Purchasing Power Loss:</span> R{{ purchasing_power_loss | round(2) }}</div>
       <div class="result-line"><span class="label">Regret Score:</span> {{ regret_score | round(2) }} / 100 ({{ verdict }})</div>
       <div class="result-line"><span class="label">Insight:</span> {{ insight }}</div>
     </div>
-    <a class="button" href="{{ url_for('home') }}">Try another scenario</a>
+    <a class="button" href="{{ url_for('home') }}">Back to calculator</a>
   </div>
 </body>
 </html>
