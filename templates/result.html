@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inflation Regret Results</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .container { max-width: 760px; margin: auto; }
+    .card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #f9f9f9; }
+    .result-line { margin: 8px 0; }
+    .label { font-weight: bold; }
+    a.button { display: inline-block; margin-top: 14px; background: #007bff; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Result for your financial decision</h1>
+    <div class="card">
+      <div class="result-line"><span class="label">Description:</span> {{ description }}</div>
+      <div class="result-line"><span class="label">Initial Amount:</span> R{{ initial_amount | round(2) }}</div>
+      <div class="result-line"><span class="label">Period:</span> {{ start_year }} → {{ end_year }} ({{ years }} years)</div>
+      <div class="result-line"><span class="label">Inflation Rate:</span> {{ inflation_rate * 100 | round(2) }}%</div>
+      <hr>
+      <div class="result-line"><span class="label">Future Cost:</span> R{{ future_cost | round(2) }}</div>
+      <div class="result-line"><span class="label">Purchasing Power Loss:</span> R{{ purchasing_power_loss | round(2) }}</div>
+      <div class="result-line"><span class="label">Regret Score:</span> {{ regret_score | round(2) }} / 100 ({{ verdict }})</div>
+      <div class="result-line"><span class="label">Insight:</span> {{ insight }}</div>
+    </div>
+    <a class="button" href="{{ url_for('home') }}">Try another scenario</a>
+  </div>
+</body>
+</html>
