@@ -38,14 +38,6 @@ Most financial decisions feel small in the moment — a coffee, a subscription, 
 
 ---
 
-## My Contribution
-
-* Built Flask routes and integrated API data
-* Collaborated using Git branching, merging, and version control under time pressure
-* Translated financial concepts into a usable product interface
-
----
-
 ## Screenshots
 
 ### Input Interface
