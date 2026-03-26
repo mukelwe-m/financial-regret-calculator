@@ -46,16 +46,16 @@ Most financial decisions feel small in the moment — a coffee, a subscription, 
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 ### Input Interface
-![Input](images\input.png)
+![Input](images/input.png)
 
 ### Results & Regret Score
-![Output](images\output.png)
+![Output](images/output.png)
 
 ### Calculation History
-![History](images\history.png)
+![History](images/history.png)
 
 ## Example Insight
 
@@ -71,5 +71,3 @@ Most financial decisions feel small in the moment — a coffee, a subscription, 
 * Building **end-to-end data products**
 * Working in **team-based Git environments**
 * Turning abstract concepts into **user-facing tools**
-
----
