@@ -72,4 +72,6 @@ My role included:
 * Turning abstract concepts into **user-facing tools**
 ---
 ## 🤝 Acknowledgements
-Original team repository: 
+
+Original team repository:  
+👉 [Mini Hackathon Repository](https://github.com/SianC7/Mini_Hackathon_19_03_26)
