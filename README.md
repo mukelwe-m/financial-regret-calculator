@@ -28,15 +28,6 @@ Most financial decisions feel small in the moment — a coffee, a subscription, 
   Displays year-by-year inflation impact
 
 ---
-## Tech Stack
-
-* **Backend:** Flask (Python)
-* **Frontend:** HTML, CSS, Jinja2
-* **Database:** SQLite + SQLAlchemy
-* **Data:** World Bank API
-* **Tools:** Git, GitHub, Copilot
-
----
 
 ## Screenshots
 
@@ -56,10 +47,29 @@ Most financial decisions feel small in the moment — a coffee, a subscription, 
 > leading to measurable purchasing power loss.
 
 ---
+## My Contribution
+This project was developed as part of a team hackathon.
 
+My role included:
+- Designing the financial regret scoring model
+- Implementing Flask routes and API integration (Python)
+- Collaborating via Git (branching, merging, pull requests)
+- Working under time constraints to deliver a functional MVP
+---
+## Tech Stack
+
+* **Backend:** Flask (Python)
+* **Frontend:** HTML, CSS, Jinja2
+* **Database:** SQLite + SQLAlchemy
+* **Data:** World Bank API
+* **Tools:** Git, GitHub, Copilot
+---
 ## What This Project Demonstrates
 
 * Ability to connect **finance + data + engineering**
 * Building **end-to-end data products**
 * Working in **team-based Git environments**
 * Turning abstract concepts into **user-facing tools**
+---
+## 🤝 Acknowledgements
+Original team repository: 
